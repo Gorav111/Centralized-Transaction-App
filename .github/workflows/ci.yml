@@ -1,0 +1,27 @@
+name: CI/CD with Stripe Sandboxes
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  devSandbox:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests Using Sandbox
+        env:
+          STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }} 
+          STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }} # attained from environment variable (stored in Github settings when run as part of CI)
+        run: npm run test  # Ensure tests leverage Sandbox API
